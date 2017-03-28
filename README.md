@@ -1,13 +1,15 @@
 # slim2
 A project on Slim Framework V2.0
 
-Usihg following to create project 
+Using following to create project
 
-Prople ORM
+Propel ORM
 
 Slim Framework V2
 
 Elastic Search
 
 PHPUnit
+
+GruntJs Task Runner
 
