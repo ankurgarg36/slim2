@@ -54,8 +54,9 @@ class PitchVisionUtils {
 			return null;
 		}
 		$firstError = $errors[$attrName];
-		if(count($firstError)==0){
-			return null;
+
+		if(!is_array($firstError) && !empty($firstError)){
+			return sprintf("%s=>%s", $attrName, $firstError);
 		}
 
 		return $firstError[0];

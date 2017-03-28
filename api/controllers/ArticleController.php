@@ -9,6 +9,7 @@
 namespace MyApp\controllers;
 
 use MyApp\APIRoutes;
+use MyApp\components\HTTPStatus;
 use MyApp\helpers\ArticleHelper;
 use MyApp\helpers\PitchVisionUtils;
 use MyApp\request\ArticleRequest;
@@ -29,100 +30,168 @@ class ArticleController extends Controller {
 	}
 
 	function routes() {
-		$this->app->get('/article/find/:id',$this->validate((new TestRequest())->anotherRules()),[$this,'getArticle'])->name("find");
-		$this->app->get('/article/findall',[$this,'getArticles'])->name("findAll");
-		$this->app->post('/article/create',$this->validate((new ArticleRequest())->rule()),[$this,'createArticle'])->name("create");
+		$this->app->get('/article/find/:id', $this->validate((new TestRequest())->anotherRules()),
+			[$this, 'getArticle'])->name("find")
+		;
+		$this->app->get('/article/findall', [$this, 'getArticles'])->name("findAll");
+		$this->app->post('/article/create', $this->validate(ArticleRequest::creatingRule()),
+			[$this, 'createArticle'])->name("create")
+		;
+		$this->app->put('/article/update/:id', $this->validate(ArticleRequest::updatingRules()),
+			[$this, 'updateArticle'])->name("update")
+		;
+		$this->app->delete('/article/delete/:id', [$this, 'deleteArticle'])->name("Delete Article");
 
-		$this->app->get('/article/findall-web',[$this,'getArticlesWeb'])->name("findAll");
-		$this->app->map('/article/create-web',[$this,'createArticleWeb'])->via('GET','POST');
-		$this->app->map('/article/update-web/:id',[$this,'updateArticleWeb'])->name("update")->via('GET','PUT');
-		$this->app->delete('/article/delete-web',[$this,'deleteArticleWeb'])->name("Delete");
+		$this->app->get('/article/findall-web', [$this, 'getArticlesWeb'])->name("findAll");
+		$this->app->map('/article/create-web', [$this, 'createArticleWeb'])->via('GET', 'POST');
+		$this->app->map('/article/update-web/:id', [$this, 'updateArticleWeb'])->name("update")->via('GET', 'PUT');
+		$this->app->delete('/article/delete-web', [$this, 'deleteArticleWeb'])->name("Delete");
 	}
 
-	public function read(){
+	public function read() {
 		$this->app->getLog()->emergency("OOP");
 		print_r($this->app->router->getCurrentRoute()->getParams());
-		echo "You are in read of demo. Your app name is :".$this->app->getName();
-		$this->app->urlFor("find",['id'=>'abcd']);
-
+		echo "You are in read of demo. Your app name is :" . $this->app->getName();
+		$this->app->urlFor("find", ['id' => 'abcd']);
 	}
 
-	public function getArticle(){
-		$article = $this->helper->findArticle($this->app->router->getCurrentRoute()->getParam('id'));
-		$this->setHttpStatus(($article)?200:204);
-		$this->response->setData($article->toArray());
+	public function getArticle() {
+		try {
+			$article = $this->helper->findArticle($this->app->router->getCurrentRoute()->getParam('id'));
+			$responseStatus = HTTPStatus::HTTP_STATUS_NO_CONTENT;
+
+			if ($article) {
+				$responseStatus = HTTPStatus::HTTP_STATUS_OK;
+				$this->response->setData($article->toArray());
+			}
+			$this->setHttpStatus($responseStatus);
+		}
+		catch (\Exception $e) {
+			$this->response->setData(['message' => $e->getMessage()]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_NO_CONTENT);
+		};
 		$this->respond();
 	}
 
 	/**
 	 *
 	 */
-	public function getArticles(){
+	public function getArticles() {
 		$this->app->getLog()->info("this is good");
 		$articles = $this->helper->findArticles();
-			$this->setHttpStatus(($articles) ? 200 : 204);
-			$this->response->setData($articles->toArray());
-			$this->respond();
+		$this->setHttpStatus(($articles) ? HTTPStatus::HTTP_STATUS_OK : HTTPStatus::HTTP_STATUS_NO_CONTENT);
+		$this->response->setData($articles->toArray());
+		$this->respond();
 	}
 
-
-	public function createArticle(){
-		$allPostVar =$this->app->request->post();
-		$article = new ArticleRequest();
-		$article->loadFromAPI($allPostVar);
-		$status = $this->helper->saveArticle($article);
-		if($status){
-			$data = ['message'=>'created sucessfully'];
-			$responseStatus = ($data)?201:404;
+	public function createArticle() {
+		try {
+			$allPostVar = $this->app->request->post();
+			$article = new ArticleRequest();
+			$article->loadFromAPI($allPostVar);
+			$status = $this->helper->saveArticle($article);
+			$responseStatus = HTTPStatus::HTTP_STATUS_NOT_ACCEPTABLE;
+			if ($status) {
+				$responseStatus = HTTPStatus::HTTP_STATUS_CREATED;
+				$this->response->setData(['message' => 'created sucessfully']);
+			}
 			$this->setHttpStatus($responseStatus);
-			$this->response->setData($data);
-			$this->respond();
 		}
+		catch (\Exception $e) {
+			$this->response->setData(['message' => $e->getMessage()]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_BAD_GATEWAY);
+		};
+		$this->respond();
+	}
+
+	public function updateArticle() {
+		try {
+			$put = $this->app->request->put();
+			$get = $this->app->router->getCurrentRoute()->getParams();
+			$data = array_merge($get, $put);
+			$model = new ArticleRequest();
+			$model->loadFromAPI($data);
+
+			$response = $this->helper->updateArticle($model);
+
+			$responseStatus = HTTPStatus::HTTP_STATUS_NOT_FOUND;
+			if ($response) {
+				$responseStatus = HTTPStatus::HTTP_STATUS_OK;
+				$this->response->setData(['message' => 'updated sucessfully']);
+			}
+			$this->setHttpStatus($responseStatus);
+		}
+		catch (\Exception $e) {
+			$this->response->setData(['message' => $e->getMessage()]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_NOT_ACCEPTABLE);
+		};
+		$this->respond();
+	}
+
+	public function deleteArticle() {
+		try {
+			$allPostVar = $this->app->router->getCurrentRoute()->getParams();
+			$articleId = $allPostVar['id'];
+			$response = $this->helper->deleteArticle($articleId);
+			$responseStatus = HTTPStatus::HTTP_STATUS_NOT_FOUND;
+			if ($response) {
+				$responseStatus = HTTPStatus::HTTP_STATUS_OK;
+				$this->response->setData(['message' => 'updated sucessfully']);
+			}
+			$this->setHttpStatus($responseStatus);
+		}
+		catch (\Exception $e) {
+			$this->response->setData(['message' => $e->getMessage()]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_NOT_ACCEPTABLE);
+		}
+		$this->respond();
 	}
 
 	public function getArticlesWeb() {
 		$articles = $this->helper->findArticles();
-		$params = array('data' => $articles,
+		$params = [
+			'data' => $articles,
 			'base_url' => $this->app->baseUrl,
 			'title' => 'Listing all articles'
-		);
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE."/view-articles.html.twig", $params);
+		];
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/view-articles.html.twig", $params);
 	}
-	public function createArticleWeb(){
+
+	public function createArticleWeb() {
 
 		if ($this->app->request->isPost()) {
-			$this->_validate((new ArticleRequest())->rule());
-			$allPostVar =$this->app->request()->post();
+			$this->_validate(ArticleRequest::creatingRule());
+			$allPostVar = $this->app->request()->post();
 			$article = new ArticleRequest();
 			$article->loadFromAPI($allPostVar);
 			$status = $this->helper->saveArticle($article);
-			if($status){
+			if ($status) {
 				$this->app->flash('success', 'Record Updated sucessfully');
-				$this->app->redirect($this->app->baseUrl.'/article/findall-web');
+				$this->app->redirect($this->app->baseUrl . '/article/findall-web');
 			}
 		}
 		$authors = PitchVisionUtils::arrayMap($this->helper->getAuthors()->toArray(), 'Id', 'AuthorName');
 		$params = [
 			'base_url' => $this->app->baseUrl,
 			'title' => 'Create Articles',
-			'authors' =>$authors
+			'authors' => $authors
 		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE."/add-article.html.twig", $params);
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/add-article.html.twig", $params);
 	}
 
 	/**
 	 * @throws \Exception
 	 */
-	public function updateArticleWeb(){
+	public function updateArticleWeb() {
 		if ($this->app->request->isPut()) {
-			$this->_validate((new ArticleRequest())->rule());
+			$this->_validate(ArticleRequest::creatingRule());
 			$allPostVar = $this->app->request->post();
 			$model = new ArticleRequest();
 			$model->loadFromAPI($allPostVar);
 			$response = $this->helper->updateArticle($model);
 			if ($response) {
 				$this->app->flash('success', 'Record Updated sucessfully');
-				$this->app->redirect($this->app->baseUrl.'/article/findall-web');
+				$this->app->redirect($this->app->baseUrl . '/article/findall-web');
 			}
 		}
 		$article = $this->helper->findArticle($this->app->router->getCurrentRoute()->getParam('id'));
@@ -131,22 +200,20 @@ class ArticleController extends Controller {
 			'data' => $article->toArray(),
 			'base_url' => $this->app->baseUrl,
 			'title' => 'Edit Articles',
-			'authors' =>$authors
+			'authors' => $authors
 		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE."/edit-article.html.twig", $params);
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/edit-article.html.twig", $params);
 	}
 
 	public function deleteArticleWeb() {
 		$allPostVar = $this->app->request->post();
 		if (!isset($allPostVar['id']) || empty($allPostVar['id'])) {
-			$this->app->redirect($this->app->baseUrl.'/article/findall-web');
+			$this->app->redirect($this->app->baseUrl . '/article/findall-web');
 		}
 		$this->app->flash('success', 'Record Deleted');
 		$articleId = $allPostVar['id'];
 		$this->helper->deleteArticle($articleId);
-		$this->app->redirect($this->app->baseUrl.'/article/findall-web');
+		$this->app->redirect($this->app->baseUrl . '/article/findall-web');
 	}
-
-
 
 }

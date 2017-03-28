@@ -24,7 +24,7 @@ class TestRequest {
 
 	public static function anotherRules(){
 		return [
-			'id'=>v::notEmpty()->numeric()->positive()->between(1,20)->setName('id')
+			'id'=>v::notEmpty()->numeric()->positive()->setName('id')
 		];
 	}
 }

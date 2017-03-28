@@ -10,6 +10,7 @@ namespace MyApp\helpers;
 
 use Base\ArticlesQuery;
 use MyApp\request\ArticleRequest;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class ArticleHelper {
 
@@ -69,16 +70,17 @@ class ArticleHelper {
 		$article = \ArticlesQuery::create()
 			->filterByPrimaryKey($id)
 			->findOne();
-
 		if(!$article){
-			return null;
+			throw new Exception('No Data Available');
 		}
 		return $article;
 	}
+
 	/**
-	 * @param ArticleRequest $request
+	 * @param \MyApp\request\ArticleRequest $request
 	 *
 	 * @return int
+	 * @throws \Exception
 	 * @throws \Propel\Runtime\Exception\PropelException
 	 */
 	public function saveArticle(ArticleRequest $request){
@@ -87,9 +89,11 @@ class ArticleHelper {
 		$article->setAuthorId($request->author_id);
 		$article->setUrl($request->url);
 		$article->setDate(date('Y-m-d'));
+
 		if (!$article->validate()) {
 			$errors =PitchVisionUtils::getActiveRecordErrors($article->getValidationFailures());
-			pre($errors);
+			$firstError = PitchVisionUtils::getFirstError($errors);
+			throw new \Exception($firstError);
 		}
 
 		$numberOfRecordsUpdated = $article->save();
@@ -103,6 +107,7 @@ class ArticleHelper {
 	 * @param \MyApp\request\ArticleRequest $articleRequest
 	 *
 	 * @return int|null
+	 * @throws \Exception
 	 * @throws \Propel\Runtime\Exception\PropelException
 	 */
 	public function updateArticle(ArticleRequest $articleRequest) {
@@ -111,21 +116,26 @@ class ArticleHelper {
 		}
 
 		$article = \ArticlesQuery::create()->findOneById($articleRequest->id);
-		$article->setTitle($articleRequest->title);
-		$article->setAuthorId($articleRequest->author_id);
-		$article->setUrl($articleRequest->url);
-		$article->setDate(date('Y-m-d'));
+		if ($article) {
+			$article->setTitle($articleRequest->title);
+			$article->setAuthorId($articleRequest->author_id);
+			$article->setUrl($articleRequest->url);
+			$article->setDate(date('Y-m-d'));
 
-		if (!$article->validate()) {
-			$errors =PitchVisionUtils::getActiveRecordErrors($article->getValidationFailures());
-			pre($errors);
-		}
+			if (!$article->validate()) {
+				$errors =PitchVisionUtils::getActiveRecordErrors($article->getValidationFailures());
+				$firstError = PitchVisionUtils::getFirstError($errors);
+				throw new \Exception($firstError);
+			}
 
-		$numberOfRecordsUpdated = $article->save();
-		if (!$numberOfRecordsUpdated) {
-			pre('article not updated because you have not make any changes in the values');
+			$numberOfRecordsUpdated = $article->save();
+			if (!$numberOfRecordsUpdated) {
+				pre('article not updated because you have not make any changes in the values');
+			}
+			return $numberOfRecordsUpdated;
+		}else{
+			throw new Exception('Group does not exist');
 		}
-		return $numberOfRecordsUpdated;
 	}
 
 	/**
@@ -140,10 +150,13 @@ class ArticleHelper {
 		}
 
 		$article = ArticlesQuery::create()->findOneById($id);
-		$article->delete();
 
-		return true;
-
+		if($article){
+			$article->delete();
+			return true;
+		}else {
+			throw new Exception('Group does not exist');
+		}
 	}
 
 	/**

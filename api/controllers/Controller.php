@@ -9,6 +9,7 @@
 namespace MyApp\controllers;
 
 use DavidePastore\Slim\Validation\Validation;
+use MyApp\components\HTTPStatus;
 use MyApp\helpers\PitchVisionUtils;
 use MyApp\response\APIResponse;
 use MyApp\Slim;
@@ -40,8 +41,8 @@ abstract class Controller {
 	 *
 	 * @return \Closure
 	 */
-	public function validate($rules,$params=[]){
-		return function() use($rules){
+	public function validate($rules, $params = []) {
+		return function () use ($rules) {
 			$this->_validate($rules);
 		};
 	}
@@ -52,18 +53,48 @@ abstract class Controller {
 	 * @throws \Exception
 	 */
 	public function _validate($rules) {
-		if ($this->app->request->isPost()) {
-			$data =$this->app->request->post();
-		}elseif($this->app->request->isPut()){
-			$data =$this->app->request->put();
-		}elseif($this->app->request->isDelete()){
-			$data =$this->app->request->delete();
-		}else{
-			$data =$this->app->router->getCurrentRoute()->getParams();
-		}
+		$data = $this->getDataToValidate();
 		$validator = new Validation($rules);
-		if($validator->_validate($data)){
-			throw new \Exception(PitchVisionUtils::getFirstError($validator->getErrors()));
+		try {
+			if ($validator->_validate($data)) {
+				throw new \Exception(PitchVisionUtils::getFirstError($validator->getErrors()));
+			}
+		}
+		catch (\Exception $e) {
+			$this->response->setData([
+				'message' => $e->getMessage()
+			]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_BAD_REQUEST);
+			$this->respond();
+			$this->app->stop();
+		}
+	}
+
+	/**
+	 * @return array|mixed|null
+	 */
+	public function getDataToValidate() {
+		if ($this->app->request->isPost()) {
+			$data = $this->app->request->post();
+
+			return $data;
+		}
+		elseif ($this->app->request->isPut()) {
+			$put = $this->app->request->put();
+			$get = $this->app->router->getCurrentRoute()->getParams();
+			$data = array_merge($get, $put);
+
+			return $data;
+		}
+		elseif ($this->app->request->isDelete()) {
+			$data = $this->app->request->delete();
+
+			return $data;
+		}
+		else {
+			$data = $this->app->router->getCurrentRoute()->getParams();
+
+			return $data;
 		}
 	}
 
@@ -71,7 +102,7 @@ abstract class Controller {
 	 * @param \MyApp\response\APIResponse|null $response
 	 * @param bool|false                       $noExtraData
 	 */
-	public function respond(APIResponse $response = null, $noExtraData = false){
+	public function respond(APIResponse $response = null, $noExtraData = false) {
 
 		if ($response == null) {
 			$response = $this->response;
@@ -81,6 +112,7 @@ abstract class Controller {
 			throw new Exception('Response body should be an object of type Hal');
 		}
 
+		HTTPStatus::validateStatus($this->_httpStatus);
 		$this->app->response->setStatus($this->_httpStatus);
 
 		switch ($this->respondAs) {
@@ -102,4 +134,5 @@ abstract class Controller {
 	protected function setHttpStatus($status = 200) {
 		$this->_httpStatus = $status;
 	}
+
 }

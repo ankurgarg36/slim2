@@ -21,12 +21,20 @@ class ArticleRequest {
 	/**
 	 * @return array
 	 */
-	public function rule(){
+	public static function creatingRule(){
 		return [
 			'title'=>v::alpha()->length(1,100)->setName('title'),
 			'url'=>v::url()->setName('url'),
 			'author_id'=>v::numeric()->setName('author_id'),
-//			'date'=>v::date('Y-m-d')->setName('date')
+		];
+	}
+
+	public static function updatingRules() {
+		return [
+			'id'=>v::notEmpty()->numeric()->setName('id'),
+			'title'=>v::alpha()->length(1,100)->setName('title'),
+			'url'=>v::url()->setName('url'),
+			'author_id'=>v::numeric()->setName('author_id'),
 		];
 	}
 
