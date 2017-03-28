@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="demo">
+	<table_data name="articles">
+	</table_data>
+	<table_data name="author">
+	<row>
+		<field name="id">1</field>
+		<field name="author_name">Ankur Garg</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="author_name">Krish</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>

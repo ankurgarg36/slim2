@@ -1,0 +1,49 @@
+{% extends "layout/layout.html.twig" %}
+
+{% block content %}
+    <h1>All Articles Listing</h1>
+    <div><a href="{{base_url}}/article/create-web" class="btn btn-info">Add New Article</a></div>
+    {{ flash.success }}
+    <div class="bs-example">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>SrNo.</th>
+                <th>title</th>
+                <th>URL </th>
+                <th>Author </th>
+                <th>Date</th>
+                <th colspan="2" align="center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if data %}
+                {% for row in data %}
+                    <!--{{dump(row)}}-->
+                    <tr>
+                        <td>{{ loop.index0+1 }}</td>
+                        <td>{{ row['Title'] }}</td>
+                        <td>{{ row['Url'] }}</td>
+                        <td>{{ row['Author.AuthorName'] }}</td>
+                        <td>{{ row['Date'] }}</td>
+                        <td><a href="{{base_url}}/article/update-web/{{row['Id']}}" class="btn btn-info">Edit</a></td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteArticle({{row['Id']}})" >Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <p>No records found</p>
+            {% endif %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <form action="{{base_url}}/article/delete-web" method="POST" id="form-delete">
+        <input type="hidden" name="_METHOD" value="DELETE"/>
+        <input type="hidden" id="id" name="id" value="">
+    </form>
+
+{% endblock content %}
+

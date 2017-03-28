@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<dataset>
+    <articles  title="this is testing three" url="http://testing1.com" date="2017-01-13"  />
+    <articles  title="thankskkkkkk" url="##NULL##" date="2017-01-14"  />
+</dataset>-->
+<dataset>
+<table name="articles">
+    <column>id</column>
+    <column>author_id</column>
+    <column>title</column>
+    <column>url</column>
+    <column>date</column>
+    <row>
+        <value></value>
+        <value>1</value>
+        <value>##NULL##</value>
+        <value>http://demo.hello.com</value>
+        <value>2010-04-26</value>
+    </row>
+</table>
+</dataset>
+

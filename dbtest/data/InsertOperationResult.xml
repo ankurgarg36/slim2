@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<dataset>
+    <articles  title="this is testing three" url="http://testing1.com" date="2017-01-13"  />
+    <articles  title="this is testing four" url="http://testing2.com" date="2017-01-14"  />
+</dataset>-->
+<dataset>
+    <table name="articles">
+        <column>id</column>
+        <column>author_id</column>
+        <column>title</column>
+        <column>url</column>
+        <column>date</column>
+        <row>
+            <value>1</value>
+            <value>1</value>
+            <value>first article</value>
+            <value>http://firstarticle.com</value>
+            <value>2017-02-03</value>
+        </row>
+        <row>
+            <value>2</value>
+            <value>2</value>
+            <value>second title</value>
+            <value>http://secondarticle.com</value>
+            <value>0000-00-00</value>
+        </row>
+        <row>
+            <value>3</value>
+            <value>1</value>
+            <value>Hi</value>
+            <value>http://demo.hello.com</value>
+            <value>2010-04-26</value>
+        </row>
+    </table>
+</dataset>

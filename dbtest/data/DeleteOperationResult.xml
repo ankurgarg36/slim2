@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <table1 table1_id="1" column1="foo" column2="42" column3="4.2" column4="bar" />
+</dataset>

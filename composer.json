@@ -1,0 +1,31 @@
+{
+    "require": {
+        "slim/slim": "2.*",
+        "propel/propel": "~2.0@dev",
+        "davidepastore/slim-validation": "^0.4.0",
+        "pimple/pimple": "*",
+        "monolog/monolog": "^1.22",
+        "flynsarmy/slim-monolog": "^1.0",
+        "akrabat/rka-slim-controller": "^2.0",
+        "rgsone/slim-lazy-controller-connector": "^2.2",
+        "phpunit/phpunit": "4.8",
+        "ajbdev/authorizenet-php-api": "dev-master",
+        "guzzlehttp/guzzle": "^6.1",
+        "nocarrier/hal": "^0.9.12",
+        "twig/twig": "*",
+        "elasticsearch/elasticsearch": "~5.0"
+    },
+    "autoload": {
+        "files": [
+            "./db/generated-conf/config.php"
+        ],
+        "classmap": ["./db/generated-classes/"],
+        "psr-4": {
+            "MyApp\\": "api",
+            "DbTesting\\":"dbtest"
+        }
+    },
+    "require-dev": {
+        "phpunit/dbunit": "^2.0"
+    }
+}

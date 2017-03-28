@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="address" package="address"  defaultIdMethod="native" defaultPhpNamingMethod="underscore" schema="address">
+    <table name="country" idMethod="native" phpName="Country">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="country_name" phpName="CountryName" type="VARCHAR" size="255" required="true"/>
+        <unique name="author_name">
+            <unique-column name="country_name"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>
