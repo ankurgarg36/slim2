@@ -8,10 +8,8 @@
 
 namespace MyApp\controllers;
 
-use MyApp\APIRoutes;
 use MyApp\components\HTTPStatus;
 use MyApp\helpers\ArticleHelper;
-use MyApp\helpers\PitchVisionUtils;
 use MyApp\request\ArticleRequest;
 use MyApp\request\TestRequest;
 use MyApp\Slim;
@@ -42,10 +40,7 @@ class ArticleController extends Controller {
 		;
 		$this->app->delete('/article/delete/:id', [$this, 'deleteArticle'])->name("Delete Article");
 
-		$this->app->get('/article/findall-web', [$this, 'getArticlesWeb'])->name("findAll");
-		$this->app->map('/article/create-web', [$this, 'createArticleWeb'])->via('GET', 'POST');
-		$this->app->map('/article/update-web/:id', [$this, 'updateArticleWeb'])->name("update")->via('GET', 'PUT');
-		$this->app->delete('/article/delete-web', [$this, 'deleteArticleWeb'])->name("Delete");
+
 	}
 
 	public function read() {
@@ -147,73 +142,5 @@ class ArticleController extends Controller {
 		$this->respond();
 	}
 
-	public function getArticlesWeb() {
-		$articles = $this->helper->findArticles();
-		$params = [
-			'data' => $articles,
-			'base_url' => $this->app->baseUrl,
-			'title' => 'Listing all articles'
-		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/view-articles.html.twig", $params);
-	}
-
-	public function createArticleWeb() {
-
-		if ($this->app->request->isPost()) {
-			$this->_validate(ArticleRequest::creatingRule());
-			$allPostVar = $this->app->request()->post();
-			$article = new ArticleRequest();
-			$article->loadFromAPI($allPostVar);
-			$status = $this->helper->saveArticle($article);
-			if ($status) {
-				$this->app->flash('success', 'Record Updated sucessfully');
-				$this->app->redirect($this->app->baseUrl . '/article/findall-web');
-			}
-		}
-		$authors = PitchVisionUtils::arrayMap($this->helper->getAuthors()->toArray(), 'Id', 'AuthorName');
-		$params = [
-			'base_url' => $this->app->baseUrl,
-			'title' => 'Create Articles',
-			'authors' => $authors
-		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/add-article.html.twig", $params);
-	}
-
-	/**
-	 * @throws \Exception
-	 */
-	public function updateArticleWeb() {
-		if ($this->app->request->isPut()) {
-			$this->_validate(ArticleRequest::creatingRule());
-			$allPostVar = $this->app->request->post();
-			$model = new ArticleRequest();
-			$model->loadFromAPI($allPostVar);
-			$response = $this->helper->updateArticle($model);
-			if ($response) {
-				$this->app->flash('success', 'Record Updated sucessfully');
-				$this->app->redirect($this->app->baseUrl . '/article/findall-web');
-			}
-		}
-		$article = $this->helper->findArticle($this->app->router->getCurrentRoute()->getParam('id'));
-		$authors = PitchVisionUtils::arrayMap($this->helper->getAuthors()->toArray(), 'Id', 'AuthorName');
-		$params = [
-			'data' => $article->toArray(),
-			'base_url' => $this->app->baseUrl,
-			'title' => 'Edit Articles',
-			'authors' => $authors
-		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/edit-article.html.twig", $params);
-	}
-
-	public function deleteArticleWeb() {
-		$allPostVar = $this->app->request->post();
-		if (!isset($allPostVar['id']) || empty($allPostVar['id'])) {
-			$this->app->redirect($this->app->baseUrl . '/article/findall-web');
-		}
-		$this->app->flash('success', 'Record Deleted');
-		$articleId = $allPostVar['id'];
-		$this->helper->deleteArticle($articleId);
-		$this->app->redirect($this->app->baseUrl . '/article/findall-web');
-	}
 
 }

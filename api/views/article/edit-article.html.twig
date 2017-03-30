@@ -3,16 +3,12 @@
 {% block content %}
     <div class="container col-lg-6">
         <h1>Article Record Editor</h1>
-        <form role="form" method="POST" action="{{base_url}}/article/update-web/{{data['Id']}}">
+        <form role="form" method="POST" action="{{base_url}}/article-web/update/{{data['Id']}}">
             {{dump(data)}}
             {{ flash.error }}
             <div class="form-group">
                 <label for="name">Title</label>
-                <input type="text" class="form-control" id="title" required name="title" value="{{data['Title']}}">
-            </div>
-            <div class="form-group">
-                <label for="name">Title</label>
-                <input type="text" class="form-control" id="title" required name="author_id" value="{{data['AuthorId']}}">
+                <input type="text" class="form-control" id="title" required name="title" value="{{data['Title']}}" onblur="convertToSlug(this.value)">
             </div>
             <div class="form-group">
                 <label for="name">Author</label>

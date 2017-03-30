@@ -32,7 +32,7 @@
 
     <behavior name="validate">
       <parameter name="rule1" value="{column: title, validator: NotNull}" />
-      <parameter name="rule2" value="{column: title, validator: Length, options: {max: 30}}" />
+      <parameter name="rule2" value="{column: title, validator: Length, options: {max: 255}}" />
       <parameter name="rule3" value="{column: url, validator: NotNull}" />
       <parameter name="rule5" value="{column: url, validator: Url}" />
       <parameter name="rule4" value="{column: date, validator: NotNull}" />

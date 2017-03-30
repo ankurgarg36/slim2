@@ -10,6 +10,7 @@ namespace MyApp;
 
 use MyApp\controllers\AccountsController;
 use MyApp\controllers\ArticleController;
+use MyApp\controllers\ArticleWebController;
 use MyApp\controllers\AuthorController;
 use MyApp\controllers\TestController2;
 
@@ -19,6 +20,7 @@ const STATUS2 = "2";
 class APIRoutes {
 
 	const GROUP_ARTICLE = "article";
+	const GROUP_ARTICLE_WEB = "article-web";
 	const GROUP_TEST = "test";
 	const GROUP_PRODUCT = "product";
 	const GROUP_AUTHOR = "author";
@@ -42,6 +44,10 @@ class APIRoutes {
 			case self::GROUP_PRODUCT;
 				$controller= new ArticleController($app);
 				$templateDirectory = self::GROUP_ARTICLE;
+				break;
+			case self::GROUP_ARTICLE_WEB;
+				$controller= new ArticleWebController($app);
+				$templateDirectory = self::GROUP_ARTICLE_WEB;
 				break;
 			case self::GROUP_TEST;
 				$controller = new TestController2($app);

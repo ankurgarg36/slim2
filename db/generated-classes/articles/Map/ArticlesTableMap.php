@@ -176,7 +176,7 @@ class ArticlesTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'validate' => array('rule1' => array ('column' => 'title','validator' => 'NotNull',), 'rule2' => array ('column' => 'title','validator' => 'Length','options' => array ('max' => 30,),), 'rule3' => array ('column' => 'url','validator' => 'NotNull',), 'rule5' => array ('column' => 'url','validator' => 'Url',), 'rule4' => array ('column' => 'date','validator' => 'NotNull',), 'rule6' => array ('column' => 'author_id','validator' => 'NotNull',), ),
+            'validate' => array('rule1' => array ('column' => 'title','validator' => 'NotNull',), 'rule2' => array ('column' => 'title','validator' => 'Length','options' => array ('max' => 255,),), 'rule3' => array ('column' => 'url','validator' => 'NotNull',), 'rule5' => array ('column' => 'url','validator' => 'Url',), 'rule4' => array ('column' => 'date','validator' => 'NotNull',), 'rule6' => array ('column' => 'author_id','validator' => 'NotNull',), ),
             'query_cache' => array('backend' => 'apc', 'lifetime' => '3600', ),
         );
     } // getBehaviors()

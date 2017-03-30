@@ -36,7 +36,7 @@ CREATE TABLE `articles`.`articles`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `author_id` INTEGER NOT NULL,
-    `title` VARCHAR(30) NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
     `url` VARCHAR(255) NOT NULL,
     `date` DATE NOT NULL,
     PRIMARY KEY (`id`),

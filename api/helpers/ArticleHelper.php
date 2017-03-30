@@ -134,7 +134,7 @@ class ArticleHelper {
 			}
 			return $numberOfRecordsUpdated;
 		}else{
-			throw new Exception('Group does not exist');
+			throw new Exception('Article does not exist');
 		}
 	}
 

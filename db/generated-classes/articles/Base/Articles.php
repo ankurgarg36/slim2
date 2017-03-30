@@ -1360,7 +1360,7 @@ abstract class Articles implements ActiveRecordInterface
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('title', new NotNull());
-        $metadata->addPropertyConstraint('title', new Length(array ('max' => 30,)));
+        $metadata->addPropertyConstraint('title', new Length(array ('max' => 255,)));
         $metadata->addPropertyConstraint('url', new NotNull());
         $metadata->addPropertyConstraint('url', new Url());
         $metadata->addPropertyConstraint('date', new NotNull());
