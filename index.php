@@ -2,6 +2,8 @@
 session_start();
 require 'vendor/autoload.php';
 
+use MyApp\components\ESHelper;
+
 if(!defined('JSON_PRESERVE_ZERO_FRACTION'))
 {
     define('JSON_PRESERVE_ZERO_FRACTION', 1024);
@@ -34,28 +36,21 @@ $app->hook("slim.before.router",function() use ($app){
 });
 
 $app->hook('slim.after', function() use ($app){
-    $client = \Elasticsearch\ClientBuilder::create()
-        ->setHosts(['http://127.0.0.1:9200'])
-        ->build();
-
-    $params = [
-        'index' => 'monolog',
-        'type' => 'api',
-        'body' => [
-            'request_uri' => $_SERVER['REQUEST_URI'],
-            'request_method' => $_SERVER['REQUEST_METHOD'],
-            'response_status'=> $app->response()->getStatus(),
-            'response_length'=> $app->response()->getLength(),
-            'ip'=> $_SERVER['REMOTE_ADDR'],
-            'host'=> $_SERVER['HTTP_HOST'],
-            'user_agent'=> $_SERVER['HTTP_USER_AGENT'],
-            'timestamp'=> date('Y-m-d H:i:s'),
-            'message' => ''
-        ]
-    ];
-
-    $client->index($params);
+    $es = new ESHelper();
+    $es->setIndex(ESHelper::DEFAULT_INDEX)
+        ->setType(ESHelper::DEFAULT_TYPE)
+        ->set('request_uri', $_SERVER['REQUEST_URI'])
+        ->set('request_method', $_SERVER['REQUEST_METHOD'])
+        ->set('response_status', $app->response()->getStatus())
+        ->set('response_length', $app->response()->getLength())
+        ->set('ip', $_SERVER['REMOTE_ADDR'])
+        ->set('host', $_SERVER['HTTP_HOST'])
+        ->set('action', $_SERVER['HTTP_USER_AGENT'])
+        ->set('timestamp', date('Y-m-d H:i:s'))
+        ->save();
+    ;
 });
+
 
 $app->run();
 
