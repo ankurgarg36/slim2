@@ -56,6 +56,17 @@ function convertToSlug(Text)
 			.replace(/-+$/, '');
 	document.getElementById('url').value = "http://www." + slug + ".com";
 }
+var form = document.getElementById("search-form");
+
+form.addEventListener("submit", function(e){
+	e.preventDefault();
+	var term = document.getElementById("q").value;
+	if(term==""){
+		return;
+	}
+	window.location.href = form.action + "/" + term;
+});
+
 </script>
 </html>
 <style>

@@ -45,7 +45,7 @@ $app->hook('slim.after', function() use ($app){
         ->set('response_length', $app->response()->getLength())
         ->set('ip', $_SERVER['REMOTE_ADDR'])
         ->set('host', $_SERVER['HTTP_HOST'])
-        ->set('action', $_SERVER['HTTP_USER_AGENT'])
+        ->set('user_agent', $_SERVER['HTTP_USER_AGENT'])
         ->set('timestamp', date('Y-m-d H:i:s'))
         ->save();
     ;

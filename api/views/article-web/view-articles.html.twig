@@ -2,8 +2,8 @@
 
 {% block content %}
     <h1>All Articles Listing</h1>
-        <form method="get" action="{{ base_url }}/article-web/search">
-        <input type="search" placeholder="Search" name="q">
+        <form method="get" action="{{ base_url }}/article-web/search" id="search-form">
+        <input type="search" placeholder="Search" name="q" id="q">
     </form>
     <div><a href="{{base_url}}/article-web/create" class="btn btn-info">Add New Article</a></div>
     {{ flash.success }}

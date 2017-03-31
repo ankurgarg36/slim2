@@ -28,6 +28,7 @@ class ESHelper {
 	const END_POINT = "http://127.0.0.1:9200";
 	const DEFAULT_INDEX = "monolog";
 	const DEFAULT_TYPE = "api";
+	const DEFAULT_SIZE = 100;
 
 	function __construct() {
 		$client = ClientBuilder::create()

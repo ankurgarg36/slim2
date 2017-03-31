@@ -9,6 +9,7 @@
 namespace MyApp\controllers;
 
 use MyApp\APIRoutes;
+use MyApp\components\ESHelper;
 use MyApp\helpers\ArticleHelper;
 use MyApp\helpers\PitchVisionUtils;
 use MyApp\request\ArticleRequest;
@@ -29,7 +30,7 @@ class ArticleWebController extends Controller {
 		$this->app->map('/article-web/update/:id', [$this, 'updateArticleWeb'])->name("update")->via('GET', 'PUT');
 		$this->app->delete('/article-web/delete', [$this, 'deleteArticleWeb'])->name("Delete");
 
-		$this->app->get("search/es/:q",[$this, 'searchFromES'])->name("search");
+		$this->app->get("/article-web/search/:q",[$this, 'searchFromES'])->name("search");
 	}
 
 	public function getArticlesWeb() {
@@ -39,7 +40,7 @@ class ArticleWebController extends Controller {
 			'base_url' => $this->app->baseUrl,
 			'title' => 'Listing all articles'
 		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/view-articles.html.twig", $params);
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE_WEB . "/view-articles.html.twig", $params);
 	}
 
 	public function createArticleWeb() {
@@ -61,7 +62,7 @@ class ArticleWebController extends Controller {
 			'title' => 'Create Articles',
 			'authors' => $authors
 		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/add-article.html.twig", $params);
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE_WEB . "/add-article.html.twig", $params);
 	}
 
 	/**
@@ -87,7 +88,7 @@ class ArticleWebController extends Controller {
 			'title' => 'Edit Articles',
 			'authors' => $authors
 		];
-		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE . "/edit-article.html.twig", $params);
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE_WEB . "/edit-article.html.twig", $params);
 	}
 
 	public function deleteArticleWeb() {
@@ -103,6 +104,32 @@ class ArticleWebController extends Controller {
 
 
 	public function searchFromES() {
+		$term = $this->app->router->getCurrentRoute()->getParams();
+		if (!isset($term['q'])) {
+			$this->app->redirect($this->app->baseUrl . '/article-web/findall');
+		}
+		$client =new ESHelper();
+		$params = [
+			'index' => 'monolog',
+			'type' => 'api',
+			'body' => [
+				'query' => [
+					'match' => [
+						'_all' =>$term['q'],
+					]
+				],
+				'size' =>ESHelper::DEFAULT_SIZE,
+			]
+		];
 
+
+		$result = $client->query($params);
+		$hits = isset($result['hits']['hits']) ? $result['hits']['hits'] : [];
+		$params = [
+			'base_url' => $this->app->baseUrl,
+			'title' => "Search Result for ".$term['q'],
+			'hits' => $hits
+		];
+		echo $this->app->twig->render(APIRoutes::GROUP_ARTICLE_WEB . "/search-result.html.twig", $params);
 	}
 }

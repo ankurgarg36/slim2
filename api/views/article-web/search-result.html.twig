@@ -1,0 +1,45 @@
+{% extends "layout/layout.html.twig" %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+        <form method="get" action="{{ base_url }}/article-web/search" id="search-form">
+        <input type="search" placeholder="Search" name="q" id="q">
+    </form>
+    <div><a href="{{base_url}}/article-web/findall" class="btn btn-info">Home</a></div>
+    <div class="bs-example">
+        {% if hits %}
+            <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>SrNo.</th>
+                <th>request_uri</th>
+                <th>request_method </th>
+                <th>response_status </th>
+                <th>response_length</th>
+                <th>Date</th>
+                <th>user_agent</th>
+            </tr>
+            </thead>
+            <tbody>
+
+                {% for data in hits %}
+                   {% set row = data['_source'] %}
+                    <tr>
+                        <td>{{ loop.index0+1 }}</td>
+                        <td>{{ row['request_uri'] }}</td>
+                        <td>{{ row['request_method'] }}</td>
+                        <td>{{ row['response_status'] }}</td>
+                        <td>{{ row['response_length'] }}</td>
+                        <td>{{ row['timestamp'] }}</td>
+                        <td>{{ row['user_agent'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No records found</p>
+        {% endif %}
+    </div>
+
+{% endblock content %}
+
