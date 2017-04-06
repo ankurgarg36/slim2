@@ -18,12 +18,13 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class PitchVisionUtils {
 
 	/**
-	 * @param \Symfony\Component\Validator\ConstraintViolationList $constraintViolationList
+	 * @param object $constraintViolationList
 	 *
 	 * it will return the error associated with corrosponding ActiveRecord Class
 	 * @return array|null
 	 */
-	public static function getActiveRecordErrors(ConstraintViolationList $constraintViolationList) {
+	public static function getActiveRecordErrors($constraintViolationList) {
+		/** \Symfony\Component\Validator\ConstraintViolationList $constraintViolationList */
 		if (empty($constraintViolationList)) {
 			return null;
 		}
