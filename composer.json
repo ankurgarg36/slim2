@@ -13,7 +13,9 @@
         "guzzlehttp/guzzle": "^6.1",
         "nocarrier/hal": "^0.9.12",
         "twig/twig": "*",
-        "elasticsearch/elasticsearch": "~5.0"
+        "elasticsearch/elasticsearch": "~5.0",
+        "diff/diff": "^2.1",
+        "lukascivil/treewalker": "dev-master"
     },
     "autoload": {
         "files": [

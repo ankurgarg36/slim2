@@ -12,6 +12,7 @@ class ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '3ef87127dc6892a0a78f223558a0b940' => __DIR__ . '/..' . '/diff/diff/Diff.php',
         '0d2add7efdd1065bcf247ea681efcf0b' => __DIR__ . '/../..' . '/db/generated-conf/config.php',
     );
 
@@ -67,6 +68,7 @@ class ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Diff\\' => 5,
             'DbTesting\\' => 10,
             'DavidePastore\\Slim\\Validation\\' => 30,
         ),
@@ -174,6 +176,10 @@ class ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Diff\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/diff/diff/src',
         ),
         'DbTesting\\' => 
         array (

@@ -31,6 +31,7 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Elasticsearch\\' => array($vendorDir . '/elasticsearch/elasticsearch/src/Elasticsearch'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
+    'Diff\\' => array($vendorDir . '/diff/diff/src'),
     'DbTesting\\' => array($baseDir . '/dbtest'),
     'DavidePastore\\Slim\\Validation\\' => array($vendorDir . '/davidepastore/slim-validation/src'),
 );
