@@ -8,11 +8,16 @@
 
 namespace MyApp\controllers;
 
+use Diff\Differ\MapDiffer;
+use GuzzleHttp;
 use MyApp\components\HTTPStatus;
 use MyApp\helpers\ArticleHelper;
+use MyApp\helpers\JsonData;
+use MyApp\helpers\PitchVisionUtils;
 use MyApp\request\ArticleRequest;
 use MyApp\request\TestRequest;
 use MyApp\Slim;
+use MyApp\TreeWalker;
 
 /**
  * Class ArticleController
@@ -32,15 +37,16 @@ class ArticleController extends Controller {
 			[$this, 'getArticle'])->name("find")
 		;
 		$this->app->get('/article/findall', [$this, 'getArticles'])->name("findAll");
+		$this->app->get('/article/diff/:flag', [$this, 'findDiff'])->name("findDiff");
+
 		$this->app->post('/article/create', $this->validate(ArticleRequest::creatingRule()),
 			[$this, 'createArticle'])->name("create")
 		;
+		$this->app->post('/article/diff', [$this, 'createDiff'])->name("creatediff");
 		$this->app->put('/article/update/:id', $this->validate(ArticleRequest::updatingRules()),
 			[$this, 'updateArticle'])->name("update")
 		;
 		$this->app->delete('/article/delete/:id', [$this, 'deleteArticle'])->name("Delete Article");
-
-
 	}
 
 	public function read() {
@@ -142,5 +148,44 @@ class ArticleController extends Controller {
 		$this->respond();
 	}
 
+	public function findDiff() {
+		$oldVersion = JsonData::getArray1();
+		$newVersion = JsonData::getArray2();
+		$flag = $this->app->router->getCurrentRoute()->getParam('flag');
 
+		if ($flag == 1) {
+			$differ = new MapDiffer();
+			$diff = $differ->doDiff($oldVersion, $newVersion);
+			$diff = PitchVisionUtils::objectToArray($diff);
+		}
+		else {
+			$diff = PitchVisionUtils::arrayRecursiveDiff($newVersion, $oldVersion);
+		}
+		$response = (array)$diff;
+		$this->setHttpStatus(200);
+		$this->response->setData($response);
+		$this->respond();
+	}
+
+	public function createDiff() {
+		$json1 = $this->app->request->post('json1');
+		$json2 = $this->app->request->post('json2');
+		try {
+			$array1 = GuzzleHttp\json_decode($json1, true);
+			$array2 = GuzzleHttp\json_decode($json2, true);
+			$treeWalker = new TreeWalker([
+				"debug" => false,                      //true => return the execution time, false => not
+				"returntype" => "array"                //Returntype = ["obj","jsonstring","array"]
+			]);
+			$diff = $treeWalker->getdiff($array2, $array1, false);
+			$formattedDiff = $treeWalker->parseDifference($diff);
+			$this->response->setData($formattedDiff);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_OK);
+		}
+		catch (\Exception $e) {
+			$this->response->setData(['message' => $e->getMessage()]);
+			$this->setHttpStatus(HTTPStatus::HTTP_STATUS_BAD_REQUEST);
+		}
+		$this->respond();
+	}
 }
