@@ -158,8 +158,16 @@ class ArticleController extends Controller {
 			$diff = $differ->doDiff($oldVersion, $newVersion);
 			$diff = PitchVisionUtils::objectToArray($diff);
 		}
-		else {
+		elseif ($flag == 2) {
 			$diff = PitchVisionUtils::arrayRecursiveDiff($newVersion, $oldVersion);
+		}
+		else {
+			$treeWalker = new TreeWalker([
+				"debug" => false,                      //true => return the execution time, false => not
+				"returntype" => "array"                //Returntype = ["obj","jsonstring","array"]
+			]);
+			$_diff = $treeWalker->getdiff($oldVersion, $newVersion, false);
+			$diff = $treeWalker->parseDifference($_diff);
 		}
 		$response = (array)$diff;
 		$this->setHttpStatus(200);
