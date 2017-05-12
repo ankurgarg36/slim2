@@ -28,7 +28,8 @@ SOFTWARE.
 class TreeWalker {
     private $config = [
         "debug" => false,
-        "returntype" => "jsonstring"
+        "returntype" => "jsonstring",
+	    "returnRequiredKeys" => []  //keys that will be return in new/edit/removed object
     ];
 
     private $typetowork = "array";
@@ -356,6 +357,13 @@ class TreeWalker {
             "removed" => [],
             "edited" => []
         ];
+	    $removido = array_diff_key($structpath2_array, $structpath1_array);
+
+	    if (!empty($removido)) {
+		    foreach ($removido as $key => $value) {
+			    $deltadiff_array["removed"][$key] = $value;
+		    }
+	    }
 
         foreach ($structpath1_array as $key1 => $value1) {
             if (array_key_exists($key1, $structpath2_array)) {
@@ -372,14 +380,11 @@ class TreeWalker {
             else {
                 $deltadiff_array["new"][$key1] = $value1;
             }
-        }
 
-        $removido = array_diff_key($structpath2_array, $structpath1_array);
+			if(!empty($this->config["returnrequiredkeys"])){
+				$deltadiff_array = $this->handleSpecialCase($key1, $deltadiff_array, $value1);
+			}
 
-        if (!empty($removido)) {
-            foreach ($removido as $key => $value) {
-                $deltadiff_array["removed"][$key] = $value;
-            }
         }
 
         if ($slashtoobject) {
@@ -511,7 +516,7 @@ class TreeWalker {
 
         /** n number of items can be added,deleted and edited */
         foreach ($value as $path => $_value) {
-            $newValue = ($key == "edited") ? $_value['newvalue'] : $_value;
+            $newValue = ($key == "edited" && isset($_value['newvalue'])) ? $_value['newvalue'] : $_value;
             $this->assignArrayByPath($arr, $path, $newValue);
         }
 
@@ -527,4 +532,45 @@ class TreeWalker {
 
         $arr = $value;
     }
+
+	/**
+	 * @param $key1
+	 * @param $deltadiff_array
+	 * @param $value1
+	 *
+	 * @return mixed
+	 */
+	private function handleSpecialCase($key1, $deltadiff_array, $value1) {
+		$explodedKey = explode("/", $key1);
+		$comparingKeys = $this->config["returnrequiredkeys"];
+		if (in_array($explodedKey[count($explodedKey) - 1], $comparingKeys) && !empty($deltadiff_array["new"])) {
+			$deltadiff_array["new"][$key1] = $value1;
+		}
+
+		if (in_array($explodedKey[count($explodedKey) - 1], $comparingKeys) && !empty($deltadiff_array["edited"])) {
+			$copyOfExplodeKey = $explodedKey;
+			array_pop($copyOfExplodeKey);
+			$text = implode("/", $copyOfExplodeKey);
+			$ret = array_keys(array_filter(array_keys($deltadiff_array["edited"]), function ($var) use ($text) {
+				return strpos($var, $text) !== false;
+			}));
+			if (!empty($ret)) {
+				$deltadiff_array["edited"][$key1] = $value1;
+			}
+		}
+
+		if (in_array($explodedKey[count($explodedKey) - 1], $comparingKeys) && !empty($deltadiff_array["removed"])) {
+			$copyOfExplodeKey = $explodedKey;
+			array_pop($copyOfExplodeKey);
+			$text = implode("/", $copyOfExplodeKey);
+			$ret = array_keys(array_filter(array_keys($deltadiff_array["removed"]), function ($var) use ($text) {
+				return strpos($var, $text) !== false;
+			}));
+			if (!empty($ret)) {
+				$deltadiff_array["removed"][$key1] = $value1;
+			}
+		}
+
+		return $deltadiff_array;
+	}
 }
