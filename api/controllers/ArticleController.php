@@ -164,12 +164,15 @@ class ArticleController extends Controller {
 		else {
 			$treeWalker = new TreeWalker([
 				"debug" => false,                      //true => return the execution time, false => not
-				"returntype" => "array"                //Returntype = ["obj","jsonstring","array"]
+				"returntype" => "array",                //Returntype = ["obj","jsonstring","array"]
+				"returnrequiredkeys" => ['id','overId','deliveryId','inningId']
 			]);
+			$oldVersion = json_decode(JsonData::getJson2(),true) ;
+			$newVersion = json_decode(JsonData::getJson1(),true);
 			$_diff = $treeWalker->getdiff($oldVersion, $newVersion, false);
 			$diff = $treeWalker->parseDifference($_diff);
 		}
-		$response = (array)$diff;
+		$response = $diff;
 		$this->setHttpStatus(200);
 		$this->response->setData($response);
 		$this->respond();

@@ -261,7 +261,7 @@ class JsonData {
 												],
 										],
 								],
-							1 =>[]
+							1 => []
 						],
 				],
 			'meta_title' => 'PitchVision.com: Match Detail',
@@ -275,6 +275,70 @@ class JsonData {
 						],
 				],
 		];
+	}
+
+	public static function getJson1() {
+		return "{\"match\":{\"innings\":[{\"overs\":[{\"deliveries\":[{\"score\":{\"runs\":\"3\",\"battingPlayerIndex\":5004,\"bowlingPlayerIndex\":5009},\"deliveryId\":4193699},{\"score\":{\"runs\":\"4\",\"battingPlayerIndex\":5004,\"bowlingPlayerIndex\":5009},\"deliveryId\":4193698}],\"overId\":\"4\"}],\"battingTeamIndex\":1,\"inningId\":12}],\"id\":9,\"type\":\"Test\"}}";
+	}
+
+	public static function getJson2() {
+		return "{\"match\":{\"innings\":[{\"overs\":[{\"deliveries\":[{\"score\":{\"runs\":\"30\",\"battingPlayerIndex\":5004,\"bowlingPlayerIndex\":5009},\"deliveryId\":4193699}],\"overId\":\"4\"},{\"deliveries\":[{\"score\":{\"runs\":\"31\",\"battingPlayerIndex\":5004,\"bowlingPlayerIndex\":5009},\"deliveryId\":4193699}],\"overId\":\"5\"}],\"battingTeamIndex\":1,\"inningId\":12},{\"overs\":[{\"deliveries\":[{\"score\":{\"runs\":\"40\",\"battingPlayerIndex\":5004,\"bowlingPlayerIndex\":5009},\"deliveryId\":4193688}],\"overId\":\"10\"}],\"battingTeamIndex\":2,\"inningId\":13}],\"id\":9}}";
+		return "{
+  \"match\": {
+    \"innings\": [
+      {
+        \"overs\": [
+          {
+            \"deliveries\": [
+              {
+                \"score\": {
+                  \"runs\": \"3\",
+                  \"battingPlayerIndex\": 5004,
+                  \"bowlingPlayerIndex\": 5009
+                },
+                \"deliveryId\": 4193699
+              },
+              {
+                \"score\": {
+                  \"runs\": \"8\",
+                  \"battingPlayerIndex\": 5004,
+                  \"bowlingPlayerIndex\": 5009
+                },
+                \"deliveryId\": 4193698
+              },
+              {
+                \"score\": {
+                  \"runs\": \"10\",
+                  \"battingPlayerIndex\": 5004,
+                  \"bowlingPlayerIndex\": 5009
+                },
+                \"deliveryId\": 4193688
+              }
+            ],
+            \"overId\": \"4\"
+          },
+          {
+            \"deliveries\": [
+              {
+                \"score\": {
+                  \"runs\": \"3\",
+                  \"battingPlayerIndex\": 5004,
+                  \"bowlingPlayerIndex\": 5009
+                },
+                \"deliveryId\": 4193799
+              }
+            ],
+            \"overId\": \"5\"
+          }
+        ],
+        \"battingTeamIndex\": 1,
+        \"inningId\": 12
+      }
+    ],
+    \"id\": 9,
+    \"type\": \"Test\"
+  }
+}";
 	}
 
 }
