@@ -191,6 +191,10 @@ class ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0
         ),
     );
 
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/lukascivil/treewalker/src',
+    );
+
     public static $prefixesPsr0 = array (
         'T' => 
         array (
@@ -833,6 +837,7 @@ class ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit0c5649ee6cebba83270b4e41a8b306d0::$classMap;
 

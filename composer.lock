@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca061b95adb2feb45966f6667a111956",
+    "content-hash": "c98dc5b30ba0fc621a09395e9e16f921",
     "packages": [
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -248,16 +248,16 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v5.1.3",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "ee931ebb6f371dc31eecbd9ec2ab2cc563823453"
+                "reference": "dc57bbcd4be2c9061ebe5be59058ea8bdebc904e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/ee931ebb6f371dc31eecbd9ec2ab2cc563823453",
-                "reference": "ee931ebb6f371dc31eecbd9ec2ab2cc563823453",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/dc57bbcd4be2c9061ebe5be59058ea8bdebc904e",
+                "reference": "dc57bbcd4be2c9061ebe5be59058ea8bdebc904e",
                 "shasum": ""
             },
             "require": {
@@ -299,7 +299,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2017-02-06T13:20:44+00:00"
+            "time": "2017-04-12T20:40:50+00:00"
         },
         {
             "name": "flynsarmy/slim-monolog",
@@ -625,6 +625,49 @@
                 "stream"
             ],
             "time": "2014-10-12T19:18:40+00:00"
+        },
+        {
+            "name": "lukascivil/treewalker",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lukascivil/TreeWalker.git",
+                "reference": "1c994ae93dc2b85c3ce60bb2f5e951e75f807d92"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lukascivil/TreeWalker/zipball/1c994ae93dc2b85c3ce60bb2f5e951e75f807d92",
+                "reference": "1c994ae93dc2b85c3ce60bb2f5e951e75f807d92",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "lucas cordeiro da Silva",
+                    "email": "lukas_civil@hotmail.com"
+                }
+            ],
+            "description": "TreeWalker is a simple and small Library that will help you to work faster with manipulation of structures in PHP",
+            "keywords": [
+                "array",
+                "diff",
+                "dynamically",
+                "json",
+                "merge",
+                "objects",
+                "recursivelly",
+                "struct"
+            ],
+            "time": "2016-11-29 20:50:48"
         },
         {
             "name": "monolog/monolog",
@@ -2827,7 +2870,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "propel/propel": 20,
-        "ajbdev/authorizenet-php-api": 20
+        "ajbdev/authorizenet-php-api": 20,
+        "lukascivil/treewalker": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

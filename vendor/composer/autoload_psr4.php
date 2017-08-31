@@ -34,4 +34,5 @@ return array(
     'Diff\\' => array($vendorDir . '/diff/diff/src'),
     'DbTesting\\' => array($baseDir . '/dbtest'),
     'DavidePastore\\Slim\\Validation\\' => array($vendorDir . '/davidepastore/slim-validation/src'),
+    '' => array($vendorDir . '/lukascivil/treewalker/src'),
 );

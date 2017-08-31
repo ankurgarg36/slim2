@@ -424,19 +424,6 @@ class Twig_Tests_TemplateTest extends PHPUnit_Framework_TestCase
 
         return $tests;
     }
-
-    /**
-     * @expectedException Twig_Error_Runtime
-     */
-    public function testGetIsMethods()
-    {
-        $getIsObject = new Twig_TemplateGetIsMethods();
-        $template = new Twig_TemplateTest(new Twig_Environment($this->getMockBuilder('Twig_LoaderInterface')->getMock(), array('strict_variables' => true)));
-        // first time should not create a cache for "get"
-        $this->assertNull($template->getAttribute($getIsObject, 'get'));
-        // 0 should be in the method cache now, so this should fail
-        $this->assertNull($template->getAttribute($getIsObject, 0));
-    }
 }
 
 class Twig_TemplateTest extends Twig_Template
@@ -679,17 +666,6 @@ class Twig_TemplateMethodObject
     public static function getStatic()
     {
         return 'static';
-    }
-}
-
-class Twig_TemplateGetIsMethods
-{
-    public function get()
-    {
-    }
-
-    public function is()
-    {
     }
 }
 
